@@ -1,10 +1,11 @@
 #![allow(unused)]
-use axum::{
-    debug_handler, routing::{get, post}, Json, Router
-};
+use axum::{routing::get,Router};
 
+mod vehicle;
+
+use vehicle::{vehicle_get, vehicle_post};
 #[tokio::main]
-async fn main() {
+pub async fn main() {
     //Create the axum router
    let router01 = Router::new()
    .route("/vehicle", get(vehicle_get).post(vehicle_post));
@@ -14,28 +15,4 @@ async fn main() {
 
    //Axum serve to launch the web server
    axum::serve(listener, router01).await.unwrap();
-}
-#[derive(Debug, serde::Serialize)]
-struct Vehicle{
-    manufacturer:String,
-    model:String,
-    year:u32,
-    id:String,
-}
-
-#[debug_handler]
-async fn vehicle_get() -> Json<Vehicle>{
-    Json::from(Vehicle {
-        manufacturer: "Dodge".to_string(),
-        model: "RAM".to_string(),
-        year: 2001,
-        id:uuid::Uuid::new_v4().to_string(),
-
-    })
-
-}
-
-
-async fn vehicle_post(){
-
 }
